@@ -1,19 +1,20 @@
-// Substitua a URL pelo link gerado no Render para o backend
-const backendUrl = "https://clouding-backend.onrender.com"; // URL da API do backend
+// Backend base URL (Render)
+const backendUrl = "https://clouding-backend.onrender.com";
 
-// Buscar e exibir repositórios do GitHub
+// Fetch and display GitHub repositories
 fetch(`${backendUrl}/api/github`)
   .then(res => res.json())
   .then(repos => {
     const list = document.getElementById('repo-list');
     repos.forEach(repo => {
       const item = document.createElement('li');
-      item.innerHTML = `<a href="${repo.html_url}" target="_blank">${repo.name}</a>: ${repo.description || 'Sem descrição'}`;
+      item.innerHTML = `<a href="${repo.html_url}" target="_blank">${repo.name}</a>: ${repo.description || 'No description'}`;
       list.appendChild(item);
     });
-  });
+  })
+  .catch(err => console.error("GitHub fetch error:", err));
 
-// Buscar e exibir vídeos do YouTube
+// Fetch and display YouTube videos
 fetch(`${backendUrl}/api/youtube`)
   .then(res => res.json())
   .then(videos => {
@@ -25,4 +26,5 @@ fetch(`${backendUrl}/api/youtube`)
       frame.allowFullscreen = true;
       container.appendChild(frame);
     });
-  });
+  })
+  .catch(err => console.error("YouTube fetch error:", err));
