@@ -1,52 +1,49 @@
 # Clouding with Me!!!
 
-"Clouding with Me!!!" is a simple web application showcasing repositories from GitHub and my recent videos. The project consists of a frontend hosted on Vercel and a backend API hosted on Render, both interacting to display dynamic data.
+**Clouding with Me!!!** is a lightweight web application that showcases GitHub repositories from `nilsonsangy` and recent videos from the KnowTree YouTube channel. The project is split between a frontend hosted on **Vercel** and a backend API hosted on **Render**, working together to serve dynamic content.
 
-## Features
+## 🌟 Features
 
-- Display **GitHub repositories** from the user `nilsonsangy`.
-- Show **recent YouTube videos** from YouTube.
-- A responsive and modern web interface built with **HTML**, **CSS**, and **JavaScript**.
-- **Backend API** built with **Node.js** and **Express**.
-- Deployed on **Vercel** (Frontend) and **Render** (Backend).
+- View public **GitHub repositories** from user [`nilsonsangy`](https://github.com/nilsonsangy)
+- Watch **recent YouTube videos** from the YouTube channel
+- Clean and responsive web interface using **HTML**, **CSS**, and **JavaScript**
+- Backend API built with **Node.js** and **Express**
+- **Frontend hosted on Vercel** and **Backend on Render**
 
-## Live Demo
+## 🔗 Live Demo
 
-Check out the live demo of the application here:
+- **Frontend (Vercel)**: [https://clouding.vercel.app/](https://clouding.vercel.app/)
+- **Backend (Render API)**: [https://clouding-backend.onrender.com](https://clouding-backend.onrender.com)
 
-- [Clouding with Me!!! on Vercel](https://clouding-with-me.vercel.app) (Frontend)
-- Backend API is hosted on Render and accessible via [https://clouding-backend.onrender.com](https://clouding-backend.onrender.com).
+## 🛠 Technologies Used
 
-## Technologies Used
+### Frontend:
+- HTML
+- CSS
+- JavaScript
+- Hosted on [Vercel](https://vercel.com/)
 
-- **Frontend**:
-  - HTML
-  - CSS
-  - JavaScript
-  - Hosted on **Vercel**
-  
-- **Backend**:
-  - Node.js
-  - Express
-  - Axios (for fetching data from GitHub API and YouTube API)
-  - Deployed on **Render**
+### Backend:
+- Node.js
+- Express.js
+- Axios (for API requests)
+- Hosted on [Render](https://render.com/)
 
-- **Other**:
-  - GitHub API (for fetching repositories)
-  - YouTube API (for fetching videos from the KnowTree channel)
+### APIs:
+- [GitHub REST API](https://docs.github.com/en/rest)
+- [YouTube Data API](https://developers.google.com/youtube/v3)
 
-## Setup and Installation
+## 🚀 Getting Started (Local Development)
 
 ### Prerequisites
 
-1. **Node.js** and **npm** installed.
-2. A **GitHub account** to access repositories.
-3. A **Google API key** for the YouTube Data API.
+- Node.js and npm installed
+- GitHub account
+- YouTube Data API key from Google Cloud Console
 
-### Steps to Run Locally
+### Steps
 
-1. Clone this repository:
-
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/nilsonsangy/clouding.git
    cd clouding
