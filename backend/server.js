@@ -1,15 +1,28 @@
+// Load environment variables from a .env file into process.env
 require("dotenv").config();
+
+// Import required modules
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 
+// Initialize the Express application
 const app = express();
+
+// Define the server port from environment variables or use default 3000
 const port = process.env.PORT || 3000;
 
+// Enable CORS (Cross-Origin Resource Sharing) for all routes
 app.use(cors());
+
+// Serve static frontend files from the 'frontend' directory
 app.use(express.static("frontend"));
 
-// GitHub API route
+/**
+ * Route: GET /api/github
+ * Description: Fetch public GitHub repositories of user 'nilsonsangy'
+ * and return them as JSON.
+ */
 app.get("/api/github", async (req, res) => {
   try {
     const response = await axios.get("https://api.github.com/users/nilsonsangy/repos");
@@ -20,20 +33,27 @@ app.get("/api/github", async (req, res) => {
   }
 });
 
-// YouTube API route
+/**
+ * Route: GET /api/youtube
+ * Description: Fetch the latest YouTube videos from a specific channel.
+ * Uses YouTube Data API v3.
+ */
 app.get("/api/youtube", async (req, res) => {
   try {
-    const apiKey = process.env.YOUTUBE_API_KEY;
-    const channelId = process.env.YOUTUBE_CHANNEL_ID || "UC__PLZtCqybzHkMQ-7oz8vw";
+    const apiKey = process.env.YOUTUBE_API_KEY; // YouTube API key from environment
+    const channelId = process.env.YOUTUBE_CHANNEL_ID || "UC__PLZtCqybzHkMQ-7oz8vw"; // Fallback channel ID
 
+    // Validate that the API key is available
     if (!apiKey) {
       return res.status(500).json({ error: "YouTube API key not configured" });
     }
 
+    // Make a request to the YouTube Data API for the latest videos
     const response = await axios.get(
       `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&order=date&part=snippet&type=video`
     );
 
+    // Return only the video items
     res.json(response.data.items);
   } catch (error) {
     console.error("Error fetching YouTube videos:", error.message);
@@ -41,7 +61,9 @@ app.get("/api/youtube", async (req, res) => {
   }
 });
 
-// Start server
+/**
+ * Start the Express server and listen on the defined port.
+ */
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
