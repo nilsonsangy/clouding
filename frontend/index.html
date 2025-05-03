@@ -1,33 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Document encoding and responsive layout -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Page title -->
   <title>Clouding with Me!!!</title>
+
+  <!-- Link to external stylesheet -->
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
+  <!-- Page header with title and subtitle -->
   <header>
     <h1>Clouding with Me!!!</h1>
     <p>Projects by <strong>nilsonsangy</strong> & Videos</p>
   </header>
 
+  <!-- Main content with two sections: GitHub repositories and YouTube videos -->
   <main>
     <section>
       <h2>Some projects</h2>
-      <ul id="repo-list"></ul>
+      <ul id="repo-list"></ul> <!-- Populated dynamically with GitHub repositories -->
     </section>
 
     <section>
       <h2>Recent Videos</h2>
-      <div id="video-list"></div>
+      <div id="video-list"></div> <!-- Populated dynamically with YouTube video embeds -->
     </section>
   </main>
 
+  <!-- Footer with external link to KnowTree -->
   <footer>
     <p>Visit KnowTree: <a href="https://knowtree.com.br" target="_blank">knowtree.com.br</a></p>
   </footer>
 
+  <!-- Load environment variables (e.g., BACKEND_URL) before executing main logic -->
+  <script src="/env.js"></script>
+
+  <!-- Main JavaScript file that uses environment config and fetches API data -->
   <script src="/main.js"></script>
 </body>
 </html>
