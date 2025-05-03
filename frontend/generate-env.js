@@ -7,6 +7,6 @@ const content = `window.env = {
   BACKEND_URL: "${backendUrl}"
 };`;
 
-const outputPath = path.join(__dirname, "../frontend/env.js");
+const outputPath = path.join(__dirname, "env.js");
 fs.writeFileSync(outputPath, content);
 console.log("✅ env.js generated with BACKEND_URL =", backendUrl);
