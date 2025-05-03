@@ -2,7 +2,7 @@
     "name": "cloudingwithme-frontend",
     "version": "1.0.0",
     "scripts": {
-      "build": "node scripts/generate-env.js"
+      "build": "node generate-env.js"
     },
     "dependencies": {}
   }  
