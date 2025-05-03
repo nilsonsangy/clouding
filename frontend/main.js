@@ -1,5 +1,5 @@
 // Retrieve the backend base URL from environment variables (e.g., for use in different environments like AWS or Render)
-const backendUrl = process.env.BACKEND_URL;
+const backendUrl = window.env.BACKEND_URL;
 
 /**
  * Fetch public GitHub repositories from the backend API
