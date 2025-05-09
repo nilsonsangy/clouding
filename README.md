@@ -117,6 +117,57 @@ kubectl apply -f clouding-kubernetes-environment.yaml
 
 This will create the necessary deployments and services for both the backend and frontend.
 
+## Rodando a Aplicação com Kubernetes (K3d)
+
+### Pré-requisitos
+Certifique-se de que você tem o K3d e o kubectl instalados no seu sistema.
+
+- Instale o K3d:
+  ```bash
+  curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+  ```
+- Instale o kubectl, se ainda não estiver instalado:
+  ```bash
+  sudo apt-get install -y kubectl
+  ```
+
+### Passos para rodar a aplicação
+
+1. **Crie um cluster Kubernetes local**
+   - Use o K3d para criar um cluster chamado `clouding-cluster`:
+     ```bash
+     k3d cluster create clouding-cluster --servers 1 --agents 2
+     ```
+
+2. **Configure o kubectl para usar o cluster**
+   - Certifique-se de que o contexto do kubectl está configurado para o cluster criado:
+     ```bash
+     kubectl config use-context k3d-clouding-cluster
+     ```
+
+3. **Prepare os arquivos de configuração do Kubernetes**
+   - Certifique-se de que o arquivo `clouding-kubernetes-environment.yaml` contém os manifests necessários para os serviços (Deployments, Services, ConfigMaps, etc.).
+   - Edite o arquivo, se necessário, para incluir as configurações corretas para o backend e frontend.
+
+4. **Aplique os manifests no cluster**
+   - Aplique o arquivo de configuração do Kubernetes:
+     ```bash
+     kubectl apply -f clouding-kubernetes-environment.yaml
+     ```
+
+5. **Verifique os pods e serviços**
+   - Verifique se os pods estão rodando:
+     ```bash
+     kubectl get pods
+     ```
+   - Verifique os serviços para obter o endereço de acesso:
+     ```bash
+     kubectl get services
+     ```
+
+6. **Acesse a aplicação**
+   - Use o endereço e a porta expostos pelo serviço para acessar a aplicação no navegador.
+
 ## 🔄 CI/CD Pipeline
 
 The project includes a GitHub Actions workflow to automate Docker image updates:
