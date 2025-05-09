@@ -86,27 +86,36 @@ To customize these values, create a `config.json` file in the `backend` director
    - Backend: [http://localhost:3000](http://localhost:3000)
    - Frontend: [http://localhost:8080](http://localhost:8080)
 
-## 🌐 Deployment with Kubernetes
+## 🌐 Kubernetes Environment Configuration
 
-### Steps
+The `clouding-kubernetes-environment.yaml` file defines the Kubernetes setup for deploying the backend and frontend services. Below is an overview of its contents:
 
-1. **Apply backend deployment and service:**
-   ```bash
-   kubectl apply -f backend/deployment.yaml
-   kubectl apply -f backend/service.yaml
-   ```
+### Backend Deployment and Service
+- **Deployment**:
+  - Creates 2 replicas of the backend application for high availability.
+  - Uses the Docker image `nilsonsangy/clouding-backend:latest`.
+  - Exposes port `3000` and sets the `NODE_ENV` environment variable to `production`.
+- **Service**:
+  - Exposes the backend pods internally within the cluster on port `3000`.
+  - Uses a `ClusterIP` service type, making it accessible only within the cluster.
 
-2. **Apply frontend deployment and service:**
-   ```bash
-   kubectl apply -f frontend/deployment.yaml
-   kubectl apply -f frontend/service.yaml
-   ```
+### Frontend Deployment and Service
+- **Deployment**:
+  - Creates 2 replicas of the frontend application for high availability.
+  - Uses the Docker image `nilsonsangy/clouding-frontend:latest`.
+  - Exposes port `80`.
+- **Service**:
+  - Exposes the frontend pods internally within the cluster on port `80`.
+  - Uses a `ClusterIP` service type, making it accessible only within the cluster.
 
-3. **Verify deployments:**
-   ```bash
-   kubectl get pods
-   kubectl get services
-   ```
+### How to Apply the Configuration
+To deploy the services to your Kubernetes cluster, run the following command:
+
+```bash
+kubectl apply -f clouding-kubernetes-environment.yaml
+```
+
+This will create the necessary deployments and services for both the backend and frontend.
 
 ## 🔄 CI/CD Pipeline
 
@@ -121,32 +130,30 @@ Ensure the following secrets are configured in your GitHub repository:
 - `DOCKER_USERNAME`: Your Docker Hub username.
 - `DOCKER_PASSWORD`: Your Docker Hub password.
 
-## 📂 Project Structure
+## CI/CD Pipeline for Docker Images
 
-```
-clouding/
-├── backend/
-│   ├── config.json
-│   ├── deployment.yaml
-│   ├── Dockerfile
-│   ├── package.json
-│   ├── server.js
-│   ├── service.yaml
-├── frontend/
-│   ├── deployment.yaml
-│   ├── Dockerfile
-│   ├── favicon.png
-│   ├── index.html
-│   ├── main.js
-│   ├── package.json
-│   ├── service.yaml
-│   ├── style.css
-│   ├── scripts/
-│   │   ├── generate-env.js
-├── docker-compose.yml
-├── env-sample
-├── README.md
-```
+The project includes a GitHub Actions workflow defined in `.github/workflows/docker-image.yml`. This workflow automates the process of building and pushing Docker images for the backend and frontend to Docker Hub.
+
+### Workflow Overview
+
+- **Trigger**: The workflow runs on every push to the `main` branch.
+- **Steps**:
+  1. **Checkout Code**: Clones the repository to the GitHub Actions runner.
+  2. **Set up Docker Buildx**: Prepares the environment for building multi-platform Docker images.
+  3. **Log in to Docker Hub**: Authenticates with Docker Hub using credentials stored in GitHub Secrets.
+  4. **Build and Push Backend Image**: Builds the backend Docker image from the `./backend` directory and pushes it to Docker Hub with the tag `nilsonsangy/clouding-backend:latest`.
+  5. **Build and Push Frontend Image**: Builds the frontend Docker image from the `./frontend` directory and pushes it to Docker Hub with the tag `nilsonsangy/clouding-frontend:latest`.
+
+### Prerequisites
+
+To use this workflow, ensure the following secrets are configured in your GitHub repository:
+
+- `DOCKER_USERNAME`: Your Docker Hub username.
+- `DOCKER_PASSWORD`: Your Docker Hub password.
+
+### How to Modify
+
+If you need to change the Docker image tags or paths, update the `tags` and `context` fields in the workflow file accordingly.
 
 ## 📝 License
 

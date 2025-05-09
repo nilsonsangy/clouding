@@ -1,37 +1,40 @@
+# This GitHub Actions workflow automates the process of building and pushing Docker images for the backend and frontend.
+# It is triggered on every push to the 'main' branch.
+
 name: Build and Push Docker Images
 
 on:
   push:
     branches:
-      - main
+      - main # Trigger the workflow only on pushes to the 'main' branch.
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner for the job.
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3 # Check out the repository code to the runner.
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v2 # Set up Docker Buildx for multi-platform builds.
 
     - name: Log in to Docker Hub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v2 # Log in to Docker Hub using credentials stored in GitHub Secrets.
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        username: ${{ secrets.DOCKER_USERNAME }} # Docker Hub username.
+        password: ${{ secrets.DOCKER_PASSWORD }} # Docker Hub password.
 
     - name: Build and push backend image
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v4 # Build and push the Docker image for the backend.
       with:
-        context: ./backend
-        push: true
-        tags: nilsonsangy/clouding-backend:latest
+        context: ./backend # Path to the backend Docker context.
+        push: true # Push the image to Docker Hub.
+        tags: nilsonsangy/clouding-backend:latest # Tag for the backend image.
 
     - name: Build and push frontend image
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v4 # Build and push the Docker image for the frontend.
       with:
-        context: ./frontend
-        push: true
-        tags: nilsonsangy/clouding-frontend:latest
+        context: ./frontend # Path to the frontend Docker context.
+        push: true # Push the image to Docker Hub.
+        tags: nilsonsangy/clouding-frontend:latest # Tag for the frontend image.
