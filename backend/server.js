@@ -5,6 +5,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
+const fs = require('fs');
 
 // Initialize the Express application
 const app = express();
@@ -17,6 +18,25 @@ app.use(cors());
 
 // Serve static frontend files from the 'frontend' directory
 app.use(express.static("frontend"));
+
+// Add support for dynamic configuration of GitHub repository and YouTube channel
+const configPath = './config.json';
+
+// Load configuration
+let config = {
+  githubRepo: 'https://github.com/nilsonsangy/',
+  youtubeChannel: 'https://www.youtube.com/@KnowTree'
+};
+
+if (fs.existsSync(configPath)) {
+  const fileContent = fs.readFileSync(configPath);
+  config = JSON.parse(fileContent);
+}
+
+// Endpoint to fetch configuration
+app.get('/api/config', (req, res) => {
+  res.json(config);
+});
 
 /**
  * Route: GET /api/github
