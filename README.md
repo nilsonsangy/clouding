@@ -47,7 +47,8 @@ The application allows you to configure the GitHub repository and YouTube channe
 - **GitHub Repository**: [https://github.com/nilsonsangy/](https://github.com/nilsonsangy/)
 - **YouTube Channel**: [https://www.youtube.com/@KnowTree](https://www.youtube.com/@KnowTree)
 
-To customize these values, create a `config.json` file in the `backend` directory with the following structure:
+### `config.json`
+The `config.json` file is used to dynamically configure the GitHub repository and YouTube channel for the application. Below is the structure of the file:
 
 ```json
 {
@@ -55,6 +56,30 @@ To customize these values, create a `config.json` file in the `backend` director
   "youtubeChannel": "<your-youtube-channel>"
 }
 ```
+
+- **`githubRepo`**: The URL of the GitHub repository to display in the application.
+  - Example: "https://github.com/your-username/"
+- **`youtubeChannel`**: The URL of the YouTube channel to fetch recent videos from.
+  - Example: "https://www.youtube.com/@YourChannelName"
+
+Place this file in the `backend` directory. If the file is not present, the application will use default values.
+
+### Environment Variables
+The application requires the following environment variables to be set in a `.env` file:
+
+```env
+YOUTUBE_API_KEY=<your-youtube-api-key>
+PORT=<backend-server-port>
+```
+
+- **`YOUTUBE_API_KEY`**: The API key for accessing the YouTube Data API. This is mandatory for fetching videos from the YouTube channel.
+  - Obtain this key from the [Google Cloud Console](https://console.cloud.google.com/).
+- **`PORT`**: The port on which the backend server will run. Defaults to `3000` if not specified.
+
+### Setting Up the `.env` File
+1. Create a `.env` file in the `backend` directory.
+2. Add the required environment variables as shown above.
+3. Save the file and restart the application to apply the changes.
 
 ## 🚀 Getting Started (Local Development)
 

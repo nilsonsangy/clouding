@@ -61,16 +61,18 @@ app.get("/api/github", async (req, res) => {
 app.get("/api/youtube", async (req, res) => {
   try {
     const apiKey = process.env.YOUTUBE_API_KEY; // YouTube API key from environment
-    const channelId = process.env.YOUTUBE_CHANNEL_ID || "UC__PLZtCqybzHkMQ-7oz8vw"; // Fallback channel ID
 
     // Validate that the API key is available
     if (!apiKey) {
       return res.status(500).json({ error: "YouTube API key not configured" });
     }
 
+    // Fetch the YouTube channel name from the config.json file
+    const channelName = config.youtubeChannel;
+
     // Make a request to the YouTube Data API for the latest videos
     const response = await axios.get(
-      `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&order=date&part=snippet&type=video`
+      `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&forUsername=${channelName}&order=date&part=snippet&type=video`
     );
 
     // Return only the video items
