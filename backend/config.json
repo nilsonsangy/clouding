@@ -1,4 +1,5 @@
 {
-  "githubRepo": "nilsonsangy",
-  "youtubeChannel": "@KnowTree"
+  "githubUser": "nilsonsangy",
+  "youtubeChannel": "KnowTree",
+  "port": 3000
 }

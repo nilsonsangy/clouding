@@ -21,7 +21,7 @@ spec:
       - name: backend
         image: nilsonsangy/clouding-backend:latest # Docker image for the backend.
         ports:
-        - containerPort: 3001
+        - containerPort: 3000 # Fixed value matching the PORT from ConfigMap
         env:
         - name: NODE_ENV
           value: "production" # Environment variable to set the backend to production mode.
@@ -35,8 +35,8 @@ spec:
     app: backend # Links the service to the backend pods.
   ports:
     - protocol: TCP
-      port: 3000 # Port exposed by the service.
-      targetPort: 3001 # CONTAINER_PORT
+      port: 3000 # Fixed value matching the PORT from ConfigMap
+      targetPort: 3000 # Fixed value matching the containerPort
   type: ClusterIP # Service is only accessible within the cluster.
 ---
 apiVersion: apps/v1
@@ -60,6 +60,9 @@ spec:
         image: nilsonsangy/clouding-frontend:latest # Docker image for the frontend.
         ports:
         - containerPort: 80 # Port exposed by the frontend container.
+        env:
+        - name: BACKEND_URL
+          value: "http://backend-service:3000" # Kubernetes service URL for the backend.
 ---
 apiVersion: v1
 kind: Service

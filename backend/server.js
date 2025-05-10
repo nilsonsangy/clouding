@@ -10,10 +10,11 @@ const fs = require('fs');
 // Initialize the Express application
 const app = express();
 
-// Define the server port from environment variables or use default 3000
-const port = process.env.PORT || 3000;
-const containerPort = process.env.CONTAINER_PORT || 3001;
-const clusterPort = process.env.CLUSTER_PORT || 3000; // Added to read CLUSTER_PORT
+// Add support for dynamic configuration of GitHub repository and YouTube channel
+const configPath = './config.json';
+
+// Extract configuration directly from config.json
+const { githubUser, youtubeChannel, port } = JSON.parse(fs.readFileSync(configPath));
 
 // Enable CORS (Cross-Origin Resource Sharing) for all routes
 app.use(cors());
@@ -21,33 +22,18 @@ app.use(cors());
 // Serve static frontend files from the 'frontend' directory
 app.use(express.static("frontend"));
 
-// Add support for dynamic configuration of GitHub repository and YouTube channel
-const configPath = './config.json';
-
-// Load configuration
-let config = {
-  githubRepo: 'https://github.com/nilsonsangy/',
-  youtubeChannel: 'https://www.youtube.com/@KnowTree'
-};
-
-if (fs.existsSync(configPath)) {
-  const fileContent = fs.readFileSync(configPath);
-  config = JSON.parse(fileContent);
-}
-
 // Endpoint to fetch configuration
 app.get('/api/config', (req, res) => {
-  res.json(config);
+  res.json({ githubUser, youtubeChannel, port });
 });
 
 /**
  * Route: GET /api/github
- * Description: Fetch public GitHub repositories of user 'nilsonsangy'
- * and return them as JSON.
+ * Description: Fetch public GitHub repositories dynamically based on the configured username.
  */
 app.get("/api/github", async (req, res) => {
   try {
-    const response = await axios.get("https://api.github.com/users/nilsonsangy/repos");
+    const response = await axios.get(`https://api.github.com/users/${githubUser}/repos`);
     res.json(response.data);
   } catch (error) {
     console.error("Error fetching GitHub repositories:", error.message);
@@ -69,12 +55,9 @@ app.get("/api/youtube", async (req, res) => {
       return res.status(500).json({ error: "YouTube API key not configured" });
     }
 
-    // Fetch the YouTube channel name from the config.json file
-    const channelName = config.youtubeChannel;
-
     // Make a request to the YouTube Data API for the latest videos
     const response = await axios.get(
-      `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&forUsername=${channelName}&order=date&part=snippet&type=video`
+      `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&forUsername=${youtubeChannel}&order=date&part=snippet&type=video`
     );
 
     // Return only the video items
@@ -86,8 +69,8 @@ app.get("/api/youtube", async (req, res) => {
 });
 
 /**
- * Start the Express server and listen on the defined container port.
+ * Start the Express server and listen on the defined port.
  */
-app.listen(containerPort, () => {
-  console.log(`Server is running on container port ${containerPort}`);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
