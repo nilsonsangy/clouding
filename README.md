@@ -117,56 +117,56 @@ kubectl apply -f clouding-kubernetes-environment.yaml
 
 This will create the necessary deployments and services for both the backend and frontend.
 
-## Rodando a Aplicação com Kubernetes (K3d)
+## Running the Application with Kubernetes (K3d)
 
-### Pré-requisitos
-Certifique-se de que você tem o K3d e o kubectl instalados no seu sistema.
+### Prerequisites
+Make sure you have K3d and kubectl installed on your system.
 
-- Instale o K3d:
+- Install K3d:
   ```bash
   curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
   ```
-- Instale o kubectl, se ainda não estiver instalado:
+- Install kubectl if it is not already installed:
   ```bash
   sudo apt-get install -y kubectl
   ```
 
-### Passos para rodar a aplicação
+### Steps to Run the Application
 
-1. **Crie um cluster Kubernetes local**
-   - Use o K3d para criar um cluster chamado `clouding-cluster`:
+1. **Create a local Kubernetes cluster**
+   - Use K3d to create a cluster named `clouding-cluster`:
      ```bash
      k3d cluster create clouding-cluster --servers 1 --agents 2
      ```
 
-2. **Configure o kubectl para usar o cluster**
-   - Certifique-se de que o contexto do kubectl está configurado para o cluster criado:
+2. **Configure kubectl to use the cluster**
+   - Ensure the kubectl context is set to the created cluster:
      ```bash
      kubectl config use-context k3d-clouding-cluster
      ```
 
-3. **Prepare os arquivos de configuração do Kubernetes**
-   - Certifique-se de que o arquivo `clouding-kubernetes-environment.yaml` contém os manifests necessários para os serviços (Deployments, Services, ConfigMaps, etc.).
-   - Edite o arquivo, se necessário, para incluir as configurações corretas para o backend e frontend.
+3. **Prepare the Kubernetes configuration files**
+   - Ensure the `clouding-kubernetes-environment.yaml` file contains the necessary manifests for the services (Deployments, Services, ConfigMaps, etc.).
+   - Edit the file if needed to include the correct configurations for the backend and frontend.
 
-4. **Aplique os manifests no cluster**
-   - Aplique o arquivo de configuração do Kubernetes:
+4. **Apply the manifests to the cluster**
+   - Apply the Kubernetes configuration file:
      ```bash
      kubectl apply -f clouding-kubernetes-environment.yaml
      ```
 
-5. **Verifique os pods e serviços**
-   - Verifique se os pods estão rodando:
+5. **Check the pods and services**
+   - Verify that the pods are running:
      ```bash
      kubectl get pods
      ```
-   - Verifique os serviços para obter o endereço de acesso:
+   - Check the services to get the access address:
      ```bash
      kubectl get services
      ```
 
-6. **Acesse a aplicação**
-   - Use o endereço e a porta expostos pelo serviço para acessar a aplicação no navegador.
+6. **Access the application**
+   - Use the address and port exposed by the service to access the application in your browser.
 
 ## 🔄 CI/CD Pipeline
 
