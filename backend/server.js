@@ -12,6 +12,8 @@ const app = express();
 
 // Define the server port from environment variables or use default 3000
 const port = process.env.PORT || 3000;
+const containerPort = process.env.CONTAINER_PORT || 3001;
+const clusterPort = process.env.CLUSTER_PORT || 3000; // Added to read CLUSTER_PORT
 
 // Enable CORS (Cross-Origin Resource Sharing) for all routes
 app.use(cors());
@@ -84,8 +86,8 @@ app.get("/api/youtube", async (req, res) => {
 });
 
 /**
- * Start the Express server and listen on the defined port.
+ * Start the Express server and listen on the defined container port.
  */
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(containerPort, () => {
+  console.log(`Server is running on container port ${containerPort}`);
 });

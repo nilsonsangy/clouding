@@ -8,7 +8,7 @@ metadata:
   labels:
     app: backend
 spec:
-  replicas: 2 # Number of backend replicas to ensure high availability.
+  replicas: 1 # Number of backend replicas to ensure high availability.
   selector:
     matchLabels:
       app: backend
@@ -21,7 +21,7 @@ spec:
       - name: backend
         image: nilsonsangy/clouding-backend:latest # Docker image for the backend.
         ports:
-        - containerPort: 3000 # Port exposed by the backend container.
+        - containerPort: 3001
         env:
         - name: NODE_ENV
           value: "production" # Environment variable to set the backend to production mode.
@@ -36,7 +36,7 @@ spec:
   ports:
     - protocol: TCP
       port: 3000 # Port exposed by the service.
-      targetPort: 3000 # Port on the backend container to route traffic to.
+      targetPort: 3001 # CONTAINER_PORT
   type: ClusterIP # Service is only accessible within the cluster.
 ---
 apiVersion: apps/v1
@@ -46,7 +46,7 @@ metadata:
   labels:
     app: frontend
 spec:
-  replicas: 2 # Number of frontend replicas to ensure high availability.
+  replicas: 1 # Number of frontend replicas to ensure high availability.
   selector:
     matchLabels:
       app: frontend
