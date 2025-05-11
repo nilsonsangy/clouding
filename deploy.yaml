@@ -25,7 +25,9 @@ spec:
         env:
         - name: NODE_ENV
           value: "production" # Environment variable to set the backend to production mode.
+
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -38,7 +40,9 @@ spec:
       port: 3000 # Fixed value matching the PORT from ConfigMap
       targetPort: 3000 # Fixed value matching the containerPort
   type: ClusterIP # Service is only accessible within the cluster.
+
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -63,7 +67,9 @@ spec:
         env:
         - name: BACKEND_URL
           value: "http://backend-service:3000" # Kubernetes service URL for the backend.
+
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
