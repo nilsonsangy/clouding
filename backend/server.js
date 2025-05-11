@@ -58,6 +58,7 @@ app.get("/api/youtube", async (req, res) => {
     // Make a request to the YouTube Data API for the latest videos
     const response = await axios.get(
       `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&forUsername=${youtubeChannel}&order=date&part=snippet&type=video`
+      `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${youtubeChannel}&order=date&part=snippet&type=video`
     );
 
     // Return only the video items
