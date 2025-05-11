@@ -25,6 +25,11 @@ spec:
         env:
         - name: NODE_ENV
           value: "production" # Environment variable to set the backend to production mode.
+        - name: YOUTUBE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: api-secrets
+              key: YOUTUBE_API_KEY
 
 ---
 
