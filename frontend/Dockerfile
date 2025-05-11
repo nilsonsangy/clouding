@@ -1,5 +1,5 @@
 # Use the official Nginx image as the base image
-FROM nginx:18
+FROM nginx:latest
 
 # Copy the frontend build to the Nginx HTML directory
 COPY . /usr/share/nginx/html

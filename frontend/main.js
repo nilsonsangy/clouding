@@ -1,5 +1,11 @@
-// Retrieve the backend base URL from environment variables (e.g., for use in different environments like AWS or Render)
-const backendUrl = window.env.BACKEND_URL;
+// Retrieve the backend base URL with a default value
+const backendUrl = window.env?.BACKEND_URL || "http://backend-service:3000";
+
+if (!backendUrl) {
+  console.error("❌ BACKEND_URL is not defined. Using the default value.");
+} else {
+  console.log(`✅ BACKEND_URL loaded: ${backendUrl}`);
+}
 
 /**
  * Fetch public GitHub repositories from the backend API
