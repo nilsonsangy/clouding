@@ -1,5 +1,5 @@
 # Use the official Nginx image as the base image
-FROM nginx:alpine
+FROM nginx:18
 
 # Copy the frontend build to the Nginx HTML directory
 COPY . /usr/share/nginx/html
