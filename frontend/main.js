@@ -1,5 +1,5 @@
 // Retrieve the backend base URL with a default value
-const backendUrl = window.env?.BACKEND_URL || "http://backend-service:30000";
+const backendUrl = window.env?.BACKEND_URL || "http://localhost:30000";
 
 if (!backendUrl) {
   console.error("❌ BACKEND_URL is not defined. Using the default value.");
