@@ -64,14 +64,28 @@ spec:
       labels:
         app: frontend
     spec:
-      containers:
-      - name: frontend
-        image: nilsonsangy/clouding-frontend:latest # Docker image for the frontend.
-        ports:
-        - containerPort: 80 # Port exposed by the frontend container.
+      initContainers:
+      - name: generate-env
+        image: node:alpine # Use a Node.js image to execute the script
+        workingDir: /app
+        command: ["node", "scripts/generate-env.js"]
         env:
         - name: BACKEND_URL
-          value: "http://backend-service:3000" # Kubernetes service URL for the backend.
+          value: "http://backend-service:3000" # Replace with the backend service URL
+        volumeMounts:
+        - name: frontend-data
+          mountPath: /app/env.js
+      containers:
+      - name: frontend
+        image: nilsonsangy/clouding-frontend:latest # Docker image for the frontend
+        ports:
+        - containerPort: 80 # Port exposed by the frontend container
+        volumeMounts:
+        - name: frontend-data
+          mountPath: /usr/share/nginx/html/env.js
+      volumes:
+      - name: frontend-data
+        emptyDir: {}
 
 ---
 
@@ -81,9 +95,9 @@ metadata:
   name: frontend-service
 spec:
   selector:
-    app: frontend # Links the service to the frontend pods.
+    app: frontend # Links the service to the frontend pods
   ports:
     - protocol: TCP
-      port: 80 # Port exposed by the service.
-      targetPort: 80 # Port on the frontend container to route traffic to.
-  type: ClusterIP # Service is only accessible within the cluster.
+      port: 80 # Port exposed by the service
+      targetPort: 80 # Port exposed by the container
+  type: ClusterIP # Service is only accessible within the cluster
