@@ -1,8 +1,6 @@
 {
-    "name": "cloudingwithme-frontend",
-    "version": "1.0.0",
-    "scripts": {
-      "build": "node scripts/generate-env.js"
-    },
-    "dependencies": {}
-  }  
+  "name": "clouding-lab-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {}
+}

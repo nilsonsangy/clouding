@@ -1,45 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Document encoding and responsive layout -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <!-- Page title -->
-  <title>Clouding with Me!!!</title>
-
-  <!-- Link to external stylesheet -->
+  <title>Clouding Lab</title>
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <!-- Page header with title and subtitle -->
-  <header>
-    <h1>Clouding with Me!!!</h1>
-    <p>Projects by <strong>nilsonsangy</strong> & Videos</p>
+  <header class="hero">
+    <p class="eyebrow">Cloud, Docker and Kubernetes incident response lab</p>
+    <h1>Clouding Lab</h1>
+    <p class="lede">A hands-on workshop for incident triage, observability, service dependency mapping, and recovery drills.</p>
   </header>
 
-  <!-- Main content with two sections: GitHub repositories and YouTube videos -->
-  <main>
-    <section>
-      <h2>Some projects</h2>
-      <ul id="repo-list"></ul> <!-- Populated dynamically with GitHub repositories -->
+  <main class="layout">
+    <section class="card">
+      <h2>Services</h2>
+      <div id="service-status" class="grid"></div>
     </section>
 
-    <section>
-      <h2>Recent Videos</h2>
-      <div id="video-list"></div> <!-- Populated dynamically with YouTube video embeds -->
+    <section class="card">
+      <h2>Sample data</h2>
+      <div id="sample-data" class="grid"></div>
+    </section>
+
+    <section class="card">
+      <h2>Incident flow</h2>
+      <ol class="steps">
+        <li>Detect the symptom</li>
+        <li>Inspect logs, metrics, and traces</li>
+        <li>Isolate the faulty service</li>
+        <li>Mitigate and recover</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>Useful links</h2>
+      <ul class="links">
+        <li><a href="http://localhost:3001/health">Users health</a></li>
+        <li><a href="http://localhost:3002/health">Orders health</a></li>
+        <li><a href="http://localhost:3003/health">Catalog health</a></li>
+        <li><a href="http://localhost:9090" target="_blank">Prometheus</a></li>
+        <li><a href="http://localhost:3005" target="_blank">Grafana</a></li>
+        <li><a href="http://localhost:16686" target="_blank">Jaeger</a></li>
+        <li><a href="http://localhost:3100" target="_blank">Loki</a></li>
+      </ul>
     </section>
   </main>
 
-  <!-- Footer with external link to KnowTree -->
-  <footer>
-    <p>Visit KnowTree: <a href="https://knowtree.com.br" target="_blank">knowtree.com.br</a></p>
-  </footer>
-
-  <!-- Load environment variables (e.g., BACKEND_URL) before executing main logic -->
-  <script src="/env.js"></script>
-
-  <!-- Main JavaScript file that uses environment config and fetches API data -->
   <script src="/main.js"></script>
 </body>
 </html>
