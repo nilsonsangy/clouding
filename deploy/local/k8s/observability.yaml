@@ -29,6 +29,14 @@ metadata:
 data:
   loki-config.yml: |
     auth_enabled: false
+
+    common:
+      path_prefix: /tmp/loki
+      replication_factor: 1
+      ring:
+        kvstore:
+          store: inmemory
+
     server:
       http_listen_port: 3100
     ingester:
@@ -55,6 +63,9 @@ data:
         cache_location: /tmp/loki/cache
       filesystem:
         directory: /tmp/loki/chunks
+
+    compactor:
+      working_directory: /tmp/loki/compactor
 ---
 apiVersion: v1
 kind: ConfigMap

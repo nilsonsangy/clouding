@@ -16,6 +16,7 @@ spec:
       containers:
         - name: users
           image: clouding-users:latest
+          imagePullPolicy: IfNotPresent
           env:
             - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
               value: http://jaeger.clouding-lab.svc.cluster.local:4318/v1/traces
@@ -59,6 +60,7 @@ spec:
       containers:
         - name: orders
           image: clouding-orders:latest
+          imagePullPolicy: IfNotPresent
           env:
             - name: USERS_URL
               value: http://users.clouding-lab.svc.cluster.local:3001
@@ -106,6 +108,7 @@ spec:
       containers:
         - name: catalog
           image: clouding-catalog:latest
+          imagePullPolicy: IfNotPresent
           env:
             - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
               value: http://jaeger.clouding-lab.svc.cluster.local:4318/v1/traces
@@ -149,6 +152,7 @@ spec:
       containers:
         - name: frontend
           image: clouding-frontend:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
           readinessProbe:
