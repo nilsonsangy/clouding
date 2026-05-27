@@ -62,6 +62,7 @@ services:
     command: -c /fluent-bit/etc/fluent-bit.conf
     volumes:
       - ./fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+      - ./fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
     depends_on:
       - loki

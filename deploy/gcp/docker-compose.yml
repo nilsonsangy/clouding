@@ -1,23 +1,21 @@
 services:
   users:
-    build:
-      context: ../../services/users
+    image: ${GCP_ARTIFACT_REGISTRY:-us-central1-docker.pkg.dev/clouding-project/clouding-repo}/clouding-users:${IMAGE_TAG:-latest}
     ports:
       - '3001:3001'
     environment:
-      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://jaeger:4318/v1/traces
+      - OTEL_DISABLED=${OTEL_DISABLED:-true}
     networks:
       - clouding-lab
 
   orders:
-    build:
-      context: ../../services/orders
+    image: ${GCP_ARTIFACT_REGISTRY:-us-central1-docker.pkg.dev/clouding-project/clouding-repo}/clouding-orders:${IMAGE_TAG:-latest}
     ports:
       - '3002:3002'
     environment:
       - USERS_URL=http://users:3001
       - CATALOG_URL=http://catalog:3003
-      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://jaeger:4318/v1/traces
+      - OTEL_DISABLED=${OTEL_DISABLED:-true}
     depends_on:
       - users
       - catalog
@@ -25,20 +23,22 @@ services:
       - clouding-lab
 
   catalog:
-    build:
-      context: ../../services/catalog
+    image: ${GCP_ARTIFACT_REGISTRY:-us-central1-docker.pkg.dev/clouding-project/clouding-repo}/clouding-catalog:${IMAGE_TAG:-latest}
     ports:
       - '3003:3003'
     environment:
-      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://jaeger:4318/v1/traces
+      - OTEL_DISABLED=${OTEL_DISABLED:-true}
     networks:
       - clouding-lab
 
   frontend:
-    build:
-      context: ../../frontend
+    image: ${GCP_ARTIFACT_REGISTRY:-us-central1-docker.pkg.dev/clouding-project/clouding-repo}/clouding-frontend:${IMAGE_TAG:-latest}
     ports:
       - '8080:80'
+    depends_on:
+      - users
+      - orders
+      - catalog
     networks:
       - clouding-lab
 

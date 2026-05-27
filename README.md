@@ -1,4 +1,4 @@
-# Clouding Lab
+# Clouding Lab Project Overview
 
 Clouding Lab is an educational application for teaching cloud incident response, Docker operations, Kubernetes troubleshooting, and observability.
 
@@ -11,19 +11,22 @@ Clouding Lab is an educational application for teaching cloud incident response,
 
 ## Project layout
 
-- `frontend/` contains the student-facing dashboard
-- `services/` contains the microservices used in the exercises
-- `observability/` contains Prometheus, Grafana, Jaeger, Loki, and Fluent Bit configuration
-- `incident-response/` contains operational scripts for fault injection and evidence collection
-- `deploy/` contains environment-specific deployment files and tutorials
+- [frontend/](frontend/) contains the student-facing dashboard
+- [services/](services/) contains the microservices used in the exercises
+- [observability/](observability/) contains Prometheus, Grafana, Jaeger, Loki, and Fluent Bit configuration
+- [incident-response/](incident-response/) contains operational scripts for fault injection and evidence collection
+- [deploy/](deploy/) contains environment-specific runbooks and deployment files
 
-## Local run
+## Environment runbooks
 
-Use `deploy/local/docker-compose.yml` for the application stack and `observability/docker-compose.yml` for the monitoring stack.
+- [Local](deploy/local/README.md)
+- [AWS](deploy/aws/README.md)
+- [Azure](deploy/azure/README.md)
+- [GCP](deploy/gcp/README.md)
 
-## Kubernetes run
+## Quick start
 
-Use the manifests inside each environment folder under `deploy/`.
+For local development, use [deploy/local/docker-compose.yml](deploy/local/docker-compose.yml) for the application stack and [observability/docker-compose.yml](observability/docker-compose.yml) for the monitoring stack.
 
 ## Notes
 

@@ -1,0 +1,272 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Clouding Lab: ECS Fargate Spot Infrastructure'
+
+Parameters:
+  EcrRegistry:
+    Type: String
+    Description: Your ECR Registry URL (e.g. 123456789012.dkr.ecr.us-east-1.amazonaws.com)
+  ImageTag:
+    Type: String
+    Default: 'latest'
+
+Resources:
+  EcsCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: clouding-lab
+      CapacityProviders:
+        - FARGATE_SPOT
+      DefaultCapacityProviderStrategy:
+        - CapacityProvider: FARGATE_SPOT
+          Weight: 1
+
+  CloudmapNamespace:
+    Type: AWS::ServiceDiscovery::PrivateDnsNamespace
+    Properties:
+      Name: clouding.internal
+      Vpc: !Ref DefaultVpc
+
+  DefaultVpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+
+  # (To keep it simple for the lab, discovering the actual default VPC is better but CFN requires passing it or creating one.
+  # Let's create a minimal VPC for this lab)
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref DefaultVpc
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+  
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref DefaultVpc
+      InternetGatewayId: !Ref InternetGateway
+
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref DefaultVpc
+  
+  PublicRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+      
+  SubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref RouteTable
+
+  AppSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow HTTP
+      VpcId: !Ref DefaultVpc
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3001
+          ToPort: 3003
+          CidrIp: 10.0.0.0/16
+
+  TaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal: { Service: ecs-tasks.amazonaws.com }
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
+
+  # Catalog Service
+  CatalogTask:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: clouding-catalog
+      RequiresCompatibilities: [ FARGATE ]
+      NetworkMode: awsvpc
+      Cpu: 256
+      Memory: 512
+      ExecutionRoleArn: !Ref TaskExecutionRole
+      ContainerDefinitions:
+        - Name: catalog
+          Image: !Sub "${EcrRegistry}/clouding-catalog:${ImageTag}"
+          PortMappings:
+            - ContainerPort: 3003
+          Environment:
+            - Name: OTEL_DISABLED
+              Value: "true"
+
+  CatalogDiscovery:
+    Type: AWS::ServiceDiscovery::Service
+    Properties:
+      Name: catalog
+      DnsConfig:
+        NamespaceId: !Ref CloudmapNamespace
+        DnsRecords:
+          - Type: A
+            TTL: 60
+        RoutingPolicy: MULTIVALUE
+
+  CatalogService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref EcsCluster
+      ServiceName: catalog
+      TaskDefinition: !Ref CatalogTask
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups: [ !Ref AppSecurityGroup ]
+          Subnets: [ !Ref PublicSubnet1 ]
+      ServiceRegistries:
+        - RegistryArn: !GetAtt CatalogDiscovery.Arn
+
+  # Users Service
+  UsersTask:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: clouding-users
+      RequiresCompatibilities: [ FARGATE ]
+      NetworkMode: awsvpc
+      Cpu: 256
+      Memory: 512
+      ExecutionRoleArn: !Ref TaskExecutionRole
+      ContainerDefinitions:
+        - Name: users
+          Image: !Sub "${EcrRegistry}/clouding-users:${ImageTag}"
+          PortMappings:
+            - ContainerPort: 3001
+          Environment:
+            - Name: OTEL_DISABLED
+              Value: "true"
+
+  UsersDiscovery:
+    Type: AWS::ServiceDiscovery::Service
+    Properties:
+      Name: users
+      DnsConfig:
+        NamespaceId: !Ref CloudmapNamespace
+        DnsRecords:
+          - Type: A
+            TTL: 60
+        RoutingPolicy: MULTIVALUE
+
+  UsersService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref EcsCluster
+      ServiceName: users
+      TaskDefinition: !Ref UsersTask
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups: [ !Ref AppSecurityGroup ]
+          Subnets: [ !Ref PublicSubnet1 ]
+      ServiceRegistries:
+        - RegistryArn: !GetAtt UsersDiscovery.Arn
+
+  # Orders Service
+  OrdersTask:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: clouding-orders
+      RequiresCompatibilities: [ FARGATE ]
+      NetworkMode: awsvpc
+      Cpu: 256
+      Memory: 512
+      ExecutionRoleArn: !Ref TaskExecutionRole
+      ContainerDefinitions:
+        - Name: orders
+          Image: !Sub "${EcrRegistry}/clouding-orders:${ImageTag}"
+          PortMappings:
+            - ContainerPort: 3002
+          Environment:
+            - Name: USERS_URL
+              Value: "http://users.clouding.internal:3001"
+            - Name: CATALOG_URL
+              Value: "http://catalog.clouding.internal:3003"
+            - Name: OTEL_DISABLED
+              Value: "true"
+
+  OrdersDiscovery:
+    Type: AWS::ServiceDiscovery::Service
+    Properties:
+      Name: orders
+      DnsConfig:
+        NamespaceId: !Ref CloudmapNamespace
+        DnsRecords:
+          - Type: A
+            TTL: 60
+        RoutingPolicy: MULTIVALUE
+
+  OrdersService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref EcsCluster
+      ServiceName: orders
+      TaskDefinition: !Ref OrdersTask
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups: [ !Ref AppSecurityGroup ]
+          Subnets: [ !Ref PublicSubnet1 ]
+      ServiceRegistries:
+        - RegistryArn: !GetAtt OrdersDiscovery.Arn
+
+  # Frontend Service
+  FrontendTask:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: clouding-frontend
+      RequiresCompatibilities: [ FARGATE ]
+      NetworkMode: awsvpc
+      Cpu: 256
+      Memory: 512
+      ExecutionRoleArn: !Ref TaskExecutionRole
+      ContainerDefinitions:
+        - Name: frontend
+          Image: !Sub "${EcrRegistry}/clouding-frontend:${ImageTag}"
+          PortMappings:
+            - ContainerPort: 80
+
+  FrontendService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref EcsCluster
+      ServiceName: frontend
+      TaskDefinition: !Ref FrontendTask
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups: [ !Ref AppSecurityGroup ]
+          Subnets: [ !Ref PublicSubnet1 ]
+
+Outputs:
+  ClusterName:
+    Value: !Ref EcsCluster
