@@ -14,7 +14,7 @@ az acr login --name $AZURE_ACR_NAME
 docker build -t clouding-users:$IMAGE_TAG app/users
 docker build -t clouding-orders:$IMAGE_TAG app/orders
 docker build -t clouding-catalog:$IMAGE_TAG app/catalog
-docker build -t clouding-frontend:$IMAGE_TAG frontend
+docker build -t clouding-frontend:$IMAGE_TAG app/frontend
 
 docker tag clouding-users:$IMAGE_TAG $AZURE_ACR_LOGIN_SERVER/clouding-users:$IMAGE_TAG
 docker tag clouding-orders:$IMAGE_TAG $AZURE_ACR_LOGIN_SERVER/clouding-orders:$IMAGE_TAG

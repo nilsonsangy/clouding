@@ -15,7 +15,7 @@ gcloud auth configure-docker $GCP_REGION-docker.pkg.dev
 docker build -t clouding-users:$IMAGE_TAG app/users
 docker build -t clouding-orders:$IMAGE_TAG app/orders
 docker build -t clouding-catalog:$IMAGE_TAG app/catalog
-docker build -t clouding-frontend:$IMAGE_TAG frontend
+docker build -t clouding-frontend:$IMAGE_TAG app/frontend
 
 docker tag clouding-users:$IMAGE_TAG $GCP_ARTIFACT_REGISTRY/clouding-users:$IMAGE_TAG
 docker tag clouding-orders:$IMAGE_TAG $GCP_ARTIFACT_REGISTRY/clouding-orders:$IMAGE_TAG

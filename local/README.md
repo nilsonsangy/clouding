@@ -40,16 +40,16 @@ docker compose -f local/observability/docker-compose.yml up -d
 
     - Windows
     ```powershell
-    .\incident-response\inject-faults.ps1 -Mode docker -Scenario latency -Service orders
-    .\incident-response\inject-faults.ps1 -Mode docker -Scenario errors -Service catalog
-    .\incident-response\inject-faults.ps1 -Mode docker -Scenario crash -Service orders
+    .\local\incident-response\inject-faults.ps1 -Mode docker -Scenario latency -Service orders
+    .\local\incident-response\inject-faults.ps1 -Mode docker -Scenario errors -Service catalog
+    .\local\incident-response\inject-faults.ps1 -Mode docker -Scenario crash -Service orders
 
-    .\incident-response\collect-logs.ps1 -Mode docker
-    .\incident-response\collect-events.ps1 -Mode docker
+    .\local\incident-response\collect-logs.ps1 -Mode docker
+    .\local\incident-response\collect-events.ps1 -Mode docker
 
-    .\incident-response\check-status.ps1 -Mode docker
+    .\local\incident-response\check-status.ps1 -Mode docker
 
-    .\incident-response\recover-faults.ps1 -Mode docker -Scenario all
+    .\local\incident-response\recover-faults.ps1 -Mode docker -Scenario all
     ```
 
 5. When you want to clean the local environment and remove the running containers, stop both stacks but keep the downloaded images so the next build is faster.
@@ -71,6 +71,7 @@ docker build -t clouding-users:latest app/users
 docker build -t clouding-orders:latest app/orders
 docker build -t clouding-catalog:latest app/catalog
 docker build -t clouding-frontend:latest frontend
+docker build -t clouding-frontend:latest app/frontend
 ```
 
 3. Load the images into the cluster runtime if your Kubernetes environment needs it.

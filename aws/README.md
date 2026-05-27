@@ -24,7 +24,7 @@ Use the CloudFormation template `ecs-fargate.yml` (ECS Fargate) as the canonical
    docker build -t clouding-users:$env:IMAGE_TAG app/users
    docker build -t clouding-orders:$env:IMAGE_TAG app/orders
    docker build -t clouding-catalog:$env:IMAGE_TAG app/catalog
-   docker build -t clouding-frontend:$env:IMAGE_TAG frontend
+   docker build -t clouding-frontend:$env:IMAGE_TAG app/frontend
 
    docker tag clouding-users:$env:IMAGE_TAG $env:AWS_ECR_REGISTRY/clouding-users:$env:IMAGE_TAG
    docker tag clouding-orders:$env:IMAGE_TAG $env:AWS_ECR_REGISTRY/clouding-orders:$env:IMAGE_TAG
