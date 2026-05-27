@@ -1,0 +1,84 @@
+services:
+  prometheus:
+    image: prom/prometheus:v2.55.0
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alert-rules.yml:/etc/prometheus/alert-rules.yml:ro
+    ports:
+      - '9090:9090'
+    networks:
+      - clouding-lab
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - '3005:3000'
+    depends_on:
+      - prometheus
+      - loki
+    networks:
+      - clouding-lab
+    restart: unless-stopped
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.61.0
+    environment:
+      COLLECTOR_OTLP_ENABLED: 'true'
+    ports:
+      - '16686:16686'
+      - '4318:4318'
+    networks:
+      - clouding-lab
+    restart: unless-stopped
+
+  loki:
+    image: grafana/loki:3.1.1
+    command: -config.file=/etc/loki/loki-config.yml
+    user: "0"
+    volumes:
+      - ./loki/loki-config.yml:/etc/loki/loki-config.yml:ro
+      - loki-data:/tmp/loki
+    ports:
+      - '3100:3100'
+    networks:
+      - clouding-lab
+    restart: unless-stopped
+
+  fluent-bit:
+    image: cr.fluentbit.io/fluent/fluent-bit:3.1.7
+    command: -c /fluent-bit/etc/fluent-bit.conf
+    volumes:
+      - ./fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+      - ./fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    depends_on:
+      - loki
+    networks:
+      - clouding-lab
+    restart: unless-stopped
+
+volumes:
+  grafana-data:
+  loki-data:
+
+networks:
+  clouding-lab:
+    name: clouding-lab
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/16
+
